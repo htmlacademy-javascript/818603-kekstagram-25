@@ -1,16 +1,14 @@
-'use strict';
+const getRandomInt = function (first, second) {
+  const min = (first < second) ? Math.ceil(first) : Math.floor(second);
+  const max = (first > second) ? Math.ceil(first) : Math.floor(second);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
-const getRandomInt = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    if (min >= 0 && max >= 0) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-  }
+getRandomInt(1, 4);
 
-const verifyCommentLength = function (string) {
-    if (string >= 5 && string <= 140) {
-        return string = true;
-    } 
-    return string = false;
+function verifyMaxLength (string, maxLength) {
+  return string.length > maxLength;
 }
+
+verifyMaxLength('hello Kitty', 4);
+
