@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const getRandomInt = function (first, second) {
   const min = (first < second) ? Math.ceil(first) : Math.floor(second);
   const max = (first > second) ? Math.ceil(first) : Math.floor(second);
@@ -19,7 +21,7 @@ const commentsUsedId = [];
 const getRandomNumber = (a, b) => {
   const randomId = getRandomInt(a, b);
   if (commentsUsedId.includes(randomId)) {
-     return getRandomNumber(a += 100, b += 100);    
+    return getRandomNumber(a += 100, b += 100);    
   }
   commentsUsedId.push(randomId);
   return randomId;
