@@ -1,36 +1,22 @@
-/* eslint-disable */
-
 const getRandomInt = function (first, second) {
   const min = (first < second) ? Math.ceil(first) : Math.floor(second);
   const max = (first > second) ? Math.ceil(first) : Math.floor(second);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
 /*
 function verifyMaxLength (string, maxLength) {
   return string.length > maxLength;
 }
 verifyMaxLength('qwerty', 10);
 */
-let integer = 0;
-const getIncrementInteger = function () {
-  return ++integer;
-};
-
-const commentsUsedId = [];
-
-const getRandomNumber = (a, b) => {
-  const randomId = getRandomInt(a, b);
-  if (commentsUsedId.includes(randomId)) {
-    return getRandomNumber(a += 100, b += 100);    
-  }
-  commentsUsedId.push(randomId);
-  return randomId;
-};
+let integer = 0; //счетчик для инкремента
 
 const getRandomArrayElement = function (elements) {
   return elements[getRandomInt(0, elements.length - 1)];
 };
 
+const PHOTO_DESCRIPTIONS_COUNT = 25;
 const COMMENT_MESSAGE = [
   'Всё отлично!',
 
@@ -47,17 +33,17 @@ const COMMENT_MESSAGE = [
 const AUTHOR_NAMES = ['Alex', 'Sergey', 'Max', 'Dima', 'Anna', 'Inna'];
 
 const createPhotoDescriptions = () => ({
-  descriptionId: getIncrementInteger(),
+  descriptionId: ++integer,
   url: `photos/${integer}.jpg`,
   description: `my photo ${integer}`,
   likes: getRandomInt(15, 200),
   comments: {
-    commentsId: getRandomNumber(1, 100),
+    commentsId: integer,
     avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
     message: getRandomArrayElement(COMMENT_MESSAGE),
     name: getRandomArrayElement(AUTHOR_NAMES),
   }
 });
 
-const publicPhotoDescriptions = Array.from({length: 25}, createPhotoDescriptions);
-console.log(publicPhotoDescriptions);
+Array.from({length: PHOTO_DESCRIPTIONS_COUNT}, createPhotoDescriptions);
+
