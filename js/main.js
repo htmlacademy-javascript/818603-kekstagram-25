@@ -10,14 +10,13 @@ function verifyMaxLength (string, maxLength) {
 }
 verifyMaxLength('qwerty', 10);
 */
-let integer = 0; //счетчик для инкремента
 
-const getRandomArrayElement = function (elements) {
-  return elements[getRandomInt(0, elements.length - 1)];
-};
-
-const PHOTO_DESCRIPTIONS_COUNT = 25;
-const COMMENT_MESSAGE = [
+const MIN_AVATAR_COUNT = 1;
+const MAX_AVATAR_COUNT = 6;
+const MIN_LIKES_COUNT = 15;
+const MAX_LIKES_COUNT = 200;
+const PHOTOS_COUNT = 25;
+const COMMENT_MESSAGES = [
   'Всё отлично!',
 
   'В целом всё неплохо. Но не всё.',
@@ -30,20 +29,42 @@ const COMMENT_MESSAGE = [
 
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
+const DESCRIPTIONS = [
+  'Я и моя ладная кошка',
+  'Закат',
+  'Как будто держу солнце на ладошке',
+  'Вместе уже целых 45 минут',
+  'Да!',
+  'Мама, я фотограф!',
+  'С пацанами',
+];
 const AUTHOR_NAMES = ['Alex', 'Sergey', 'Max', 'Dima', 'Anna', 'Inna'];
 
-const createPhotoDescriptions = () => ({
-  descriptionId: ++integer,
-  url: `photos/${integer}.jpg`,
-  description: `my photo ${integer}`,
-  likes: getRandomInt(15, 200),
-  comments: {
-    commentsId: integer,
-    avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
-    message: getRandomArrayElement(COMMENT_MESSAGE),
-    name: getRandomArrayElement(AUTHOR_NAMES),
-  }
+const getAvatarUrl = () => {
+  const avatarId = getRandomInt(MIN_AVATAR_COUNT, MAX_AVATAR_COUNT);
+  return `img/avatar-${avatarId}.jpg`;
+};
+
+const getRandomArrayElement = (elements) => elements[getRandomInt(0, elements.length - 1)];
+
+const getCommentsData = (id) => ({
+  id,
+  avatar: getAvatarUrl(),
+  message: getRandomArrayElement(COMMENT_MESSAGES),
+  name: getRandomArrayElement(AUTHOR_NAMES),
 });
 
-Array.from({length: PHOTO_DESCRIPTIONS_COUNT}, createPhotoDescriptions);
+const getCommentData = () => Array.from({ length: 2 }, (v, k) => getCommentsData(k + 1));
+
+const getPicturePhoto = (id) => ({
+  id,
+  url: `photos/${id}.jpg`,
+  description: getRandomArrayElement(DESCRIPTIONS),
+  likes: getRandomInt(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
+  comments: getCommentData()
+});
+
+const getPicturesPhoto = () => Array.from({ length: PHOTOS_COUNT }, (v, k) => getPicturePhoto(k + 1));
+
+getPicturesPhoto();
 
