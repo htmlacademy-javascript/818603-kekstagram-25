@@ -18,5 +18,3 @@ arrayData.forEach((dataValue) => {
 });
 
 thumbnailContainer.appendChild(thumbnailListFragment);
-
-export { thumbnailContainer };
