@@ -1,3 +1,3 @@
-import { createThumbnail } from './thumbnails.js';
+import { createThumbnails } from './create-thumbnails.js';
 
-createThumbnail();
+createThumbnails();

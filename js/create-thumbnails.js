@@ -1,12 +1,12 @@
-import { getPhotosDescription, PHOTOS_COUNT } from './data.js';
+import { getPhotosDescriptions, PHOTOS_COUNT } from './data.js';
 
-const arrayData = getPhotosDescription(PHOTOS_COUNT);
+const photosDescriptions = getPhotosDescriptions(PHOTOS_COUNT);
 const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newTemplate = thumbnailTemplate.querySelector('.picture');
 
-arrayData.forEach((dataValue) => {
+photosDescriptions.forEach((dataValue) => {
   const newThumbnail = newTemplate.cloneNode(true);
   const imgUrl = newThumbnail.querySelector('.picture__img');
   const likesCount = newThumbnail.querySelector('.picture__likes');
@@ -17,6 +17,6 @@ arrayData.forEach((dataValue) => {
   thumbnailListFragment.appendChild(newThumbnail);
 });
 
-const createThumbnail = () => thumbnailContainer.appendChild(thumbnailListFragment);
+const createThumbnails = () => thumbnailContainer.appendChild(thumbnailListFragment);
 
-export { createThumbnail };
+export { createThumbnails };
