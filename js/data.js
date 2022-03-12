@@ -38,7 +38,7 @@ const getCommentData = (id) => ({
 
 const getCommentsData = () => Array.from({ length: 2 }, (v, k) => getCommentData(k + 1));
 
-const getPhotoDescription = (id) => ({
+const getPhotoDescriptions = (id) => ({
   id,
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
@@ -46,6 +46,6 @@ const getPhotoDescription = (id) => ({
   comments: getCommentsData()
 });
 
-const getPhotosDescription = (count) => Array.from({ length: count }, (v, k) => getPhotoDescription(k + 1));
+const getPhotosDescriptions = (count) => Array.from({ length: count }, (v, k) => getPhotoDescriptions(k + 1));
 
-export { getPhotosDescription, PHOTOS_COUNT };
+export { getPhotosDescriptions, PHOTOS_COUNT };

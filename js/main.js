@@ -1,3 +1,3 @@
-import { getPhotosDescription, PHOTOS_COUNT } from './data.js';
+import { createThumbnails } from './create-thumbnails.js';
 
-getPhotosDescription(PHOTOS_COUNT);
+createThumbnails();
