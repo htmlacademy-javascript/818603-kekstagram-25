@@ -5,6 +5,7 @@ const MAX_AVATAR_COUNT = 6;
 const MIN_LIKES_COUNT = 15;
 const MAX_LIKES_COUNT = 200;
 const PHOTOS_COUNT = 25;
+const COMMENTS_COUNT = 3;
 const COMMENT_MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -22,7 +23,7 @@ const DESCRIPTIONS = [
   'Мама, я фотограф!',
   'С пацанами',
 ];
-const AUTHOR_NAMES = ['Alex', 'Sergey', 'Max', 'Dima', 'Anna', 'Inna'];
+const NAMES = ['Alex', 'Sergey', 'Max', 'Dima', 'Anna', 'Inna'];
 
 const getAvatarUrl = () => {
   const avatarId = getRandomInt(MIN_AVATAR_COUNT, MAX_AVATAR_COUNT);
@@ -33,19 +34,19 @@ const getCommentData = (id) => ({
   id,
   avatar: getAvatarUrl(),
   message: getRandomArrayElement(COMMENT_MESSAGES),
-  name: getRandomArrayElement(AUTHOR_NAMES),
+  name: getRandomArrayElement(NAMES),
 });
 
-const getCommentsData = () => Array.from({ length: 2 }, (v, k) => getCommentData(k + 1));
+const getCommentsData = (count) => Array.from({ length: count }, (v, k) => getCommentData(k + 1));
 
 const getPhotoDescriptions = (id) => ({
   id,
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInt(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
-  comments: getCommentsData()
+  comments: getCommentsData(COMMENTS_COUNT)
 });
 
 const getPhotosDescriptions = (count) => Array.from({ length: count }, (v, k) => getPhotoDescriptions(k + 1));
 
-export { getPhotosDescriptions, PHOTOS_COUNT };
+export { getPhotosDescriptions, getCommentsData, PHOTOS_COUNT, COMMENTS_COUNT };
