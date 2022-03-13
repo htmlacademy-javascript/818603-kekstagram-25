@@ -1,5 +1,5 @@
 import { getPhotosDescriptions, PHOTOS_COUNT } from './data.js';
-import { renderBigPhoto, openBigPhoto } from './fullsize-photo';
+import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
 
 const photosData = getPhotosDescriptions(PHOTOS_COUNT);
 const thumbnailContainer = document.querySelector('.pictures');
@@ -7,7 +7,7 @@ const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newTemplate = thumbnailTemplate.querySelector('.picture');
 
-const createThumbnails = (data) => {
+const createThumbnail = (data) => {
   const newThumbnail = newTemplate.cloneNode(true);
   const imgUrl = newThumbnail.querySelector('.picture__img');
   const likesCount = newThumbnail.querySelector('.picture__likes');
@@ -22,10 +22,11 @@ const createThumbnails = (data) => {
   return newThumbnail;
 };
 
-const thumbnails = photosData.map((data) => createThumbnails(data));
+const renderThumbnails = () => {
+  const thumbnails = photosData.map(createThumbnail);
+  thumbnailListFragment.append(...thumbnails);
+  return thumbnailContainer.append(thumbnailListFragment);
+};
 
-thumbnailListFragment.appendChild(...thumbnails);
-thumbnailContainer.appendChild(thumbnailListFragment);
-
-export { createThumbnails };
+export { renderThumbnails };
 

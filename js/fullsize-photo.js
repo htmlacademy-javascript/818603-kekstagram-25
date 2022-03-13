@@ -5,7 +5,8 @@ const commentTemplate = document.querySelector('#comment').content;
 const newTemplate = commentTemplate.querySelector('.social__comment');
 const container = document.querySelector('.social__comments');
 const thumbnailsContainer = document.querySelector('.pictures');
-const bigPicture = document.querySelector('.big-picture').children('img');
+const bigPicture = document.querySelector('.big-picture');
+const bigImage = bigPicture.querySelector('img');
 const closeButton = document.querySelector('#picture-cancel');
 const listComments = document.querySelector('.social__comment-count');
 const commentsLoad = document.querySelector('.comments-loader');
@@ -18,6 +19,7 @@ const onBigPhotoEscKeydown = (evt) => {
   }
 };
 function closeBigPhoto () {
+  container.innerHTML = '';
   bigPicture.classList.add('hidden');
   listComments.classList.add('hidden');
   commentsLoad.classList.add('hidden');
@@ -41,11 +43,12 @@ const renderBigPhoto = (dataPhoto) => {
   const likesCount = document.querySelector('.likes-count');
   const commentsCount = document.querySelector('.comments-count');
   const descriptionPhoto = document.querySelector('.social__caption');
-  bigPicture.src = dataPhoto.url;
+  bigImage.src = dataPhoto.url;
   likesCount.textContent = dataPhoto.likes;
   descriptionPhoto.textContent = dataPhoto.description;
   const socialComments = dataPhoto.comments;
   commentsCount.textContent = socialComments.length;
+
   socialComments.forEach((dataComment) => {
     const newComment = newTemplate.cloneNode(true);
     newComment.querySelector('.social__text').textContent = dataComment;
