@@ -21,16 +21,16 @@ const onBigPhotoEscKeydown = (evt) => {
 function closeBigPhoto () {
   container.innerHTML = '';
   bigPicture.classList.add('hidden');
-  listComments.classList.add('hidden');
-  commentsLoad.classList.add('hidden');
+  listComments.classList.remove('hidden');
+  commentsLoad.classList.remove('hidden');
   bodyTag.classList.remove('modal-open');
   document.removeEventListener('keydown', onBigPhotoEscKeydown);
 }
 
 function openBigPhoto () {
   bigPicture.classList.remove('hidden');
-  listComments.classList.remove('hidden');
-  commentsLoad.classList.remove('hidden');
+  listComments.classList.add('hidden');
+  commentsLoad.classList.add('hidden');
   bodyTag.classList.add('modal-open');
   document.addEventListener('keydown', onBigPhotoEscKeydown);
 }
