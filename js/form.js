@@ -10,6 +10,7 @@ const preview = document.querySelector('.img-upload__preview').querySelector('im
 const hashtag = document.querySelector('.text__hashtags');
 // const re = /^#[A-Za-zA-Яа-яËё0-9]{1, 5}$/;
 
+
 //validate form
 const validateForm = () => {
   const pristine = new Pristine(form, {
@@ -24,6 +25,12 @@ const validateForm = () => {
     }
     return false;
   };
+  const checkHashtag = (value) => {
+    if (value === '') {
+      return true;
+    }
+    return false;
+  };
 
   const checkMaxLength = (value) => {
     const tags = value.split(' ');
@@ -32,7 +39,7 @@ const validateForm = () => {
   };
 
   const checkFirstSymbol = (value) => {
-    if (value[0] === '#' || value === '') {
+    if (value[0] === '#') {
       return true;
     }
     return false;
@@ -41,6 +48,7 @@ const validateForm = () => {
   pristine.addValidator(hashtag, checkMinLength, 'hashtag length min 2 symbols');
   pristine.addValidator(hashtag, checkMaxLength, 'hashtag length max 20 symbols');
   pristine.addValidator(hashtag, checkFirstSymbol, 'begin with #');
+  pristine.addValidator(hashtag, checkHashtag, 'wrong symbol', 5, true);
 
   form.addEventListener('submit', (evt) => {
     const valid = pristine.validate();
