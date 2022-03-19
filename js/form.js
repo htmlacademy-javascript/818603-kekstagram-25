@@ -1,37 +1,54 @@
 import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
-const MAXLENGTH = 3;
+const MAXLENGTH = 5;
 const form = document.querySelector('.img-upload__form');
 const openForm = document.querySelector('#upload-file');
 const description = document.querySelector('.text__description');
 const editPhoto = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview').querySelector('img');
+const hashtag = document.querySelector('.text__hashtags');
+// const re = /^#[A-Za-zA-Яа-яËё0-9]{1, 5}$/;
 
 //validate form
+const validateForm = () => {
+  const pristine = new Pristine(form, {
+    classTo: 'img-upload__form',
+    errorTextParent: 'text__hashtags-container'
+  });
 
-const pristine = new Pristine(form);
-const hashtagInput = document.querySelector('.text__hashtags');
+  const checkLength = (value, maxLength) => value.length <= maxLength;
+  const checkMinLength = (value) => {
+    if (value[1] !== ' ') {
+      return true;
+    }
+    return false;
+  };
 
-const checkLength = (string, maxLength) => string.length <= maxLength;
+  const checkMaxLength = (value) => {
+    const tags = value.split(' ');
+    const string = tags.filter((item) => item !== '');
+    return string.every((item) => checkLength(item, MAXLENGTH));
+  };
 
-const checkMaxLength = (str) => {
-  if (str === '') {
-    return true;
-  }
-  const tags = str.split(' ');
-  return tags.every((item) => checkLength(item, MAXLENGTH));
+  const checkFirstSymbol = (value) => {
+    if (value[0] === '#' || value === '') {
+      return true;
+    }
+    return false;
+  };
+
+  pristine.addValidator(hashtag, checkMinLength, 'hashtag length min 2 symbols');
+  pristine.addValidator(hashtag, checkMaxLength, 'hashtag length max 20 symbols');
+  pristine.addValidator(hashtag, checkFirstSymbol, 'begin with #');
+
+  form.addEventListener('submit', (evt) => {
+    const valid = pristine.validate();
+    if (!valid) {
+      evt.preventDefault();
+    }
+  });
 };
-
-pristine.addValidator(hashtagInput, checkMaxLength, 'error text message');
-
-form.addEventListener('submit', (evt) => {
-  const valid = pristine.validate();
-  if (!valid) {
-    evt.preventDefault();
-  }
-});
-
 // end validate form
 
 const onUploadEscKeydown = (evt) => {
@@ -48,9 +65,9 @@ const onFocusBlurEscKeydown = () => {
       document.addEventListener('keydown', onUploadEscKeydown);
     });
   });
-  hashtagInput.addEventListener('focus', () => {
+  hashtag.addEventListener('focus', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
-    hashtagInput.addEventListener('blur', () => {
+    hashtag.addEventListener('blur', () => {
       document.addEventListener('keydown', onUploadEscKeydown);
     });
   });
@@ -72,7 +89,7 @@ function closeUpload () {
   description.addEventListener('focus', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
   });
-  hashtagInput.addEventListener('focus', () => {
+  hashtag.addEventListener('focus', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
   });
 }
@@ -81,6 +98,7 @@ const initializeForm = () => {
   const closeForm = document.querySelector('#upload-cancel');
   openForm.addEventListener('change', openUpload);
   closeForm.addEventListener('click', closeUpload);
+  validateForm();
 };
 
 export { initializeForm };

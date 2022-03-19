@@ -115,7 +115,9 @@
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  <div class="text__hashtags-container">
+                    <input type="text" class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  </div>
                   <textarea class="text__description" name="description" maxlength="140" data-pristine-maxlength="140" placeholder="Ваш комментарий..." ></textarea>
                 </fieldset>
 
