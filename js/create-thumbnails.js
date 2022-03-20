@@ -25,7 +25,7 @@ const createThumbnail = (data) => {
 const renderThumbnails = () => {
   const thumbnails = photosData.map(createThumbnail);
   thumbnailListFragment.append(...thumbnails);
-  return thumbnailContainer.append(thumbnailListFragment);
+  thumbnailContainer.append(thumbnailListFragment);
 };
 
 export { renderThumbnails };

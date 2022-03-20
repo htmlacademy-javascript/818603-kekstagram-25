@@ -18,6 +18,7 @@ const onBigPhotoEscKeydown = (evt) => {
     closeBigPhoto();
   }
 };
+
 function closeBigPhoto () {
   container.innerHTML = '';
   bigPicture.classList.add('hidden');
@@ -35,9 +36,8 @@ function openBigPhoto () {
   document.addEventListener('keydown', onBigPhotoEscKeydown);
 }
 
-closeButton.addEventListener('click', () => {
-  closeBigPhoto();
-});
+closeButton.addEventListener('click', closeBigPhoto);
+
 
 const renderBigPhoto = (dataPhoto) => {
   const likesCount = document.querySelector('.likes-count');
@@ -54,7 +54,7 @@ const renderBigPhoto = (dataPhoto) => {
     newComment.querySelector('.social__text').textContent = dataComment;
     container.appendChild(newComment);
   });
-  return thumbnailsContainer.appendChild(container);
+  thumbnailsContainer.appendChild(container);
 };
 
-export { renderBigPhoto, openBigPhoto };
+export { renderBigPhoto, openBigPhoto, bodyTag };

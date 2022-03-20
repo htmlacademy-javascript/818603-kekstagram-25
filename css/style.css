@@ -1403,3 +1403,12 @@ main {
 .hidden {
   display: none;
 }
+
+/* validate form */
+
+.pristine-error {
+  margin-top: -20px;
+  text-transform: lowercase;
+  color:#e90000;
+}
+
