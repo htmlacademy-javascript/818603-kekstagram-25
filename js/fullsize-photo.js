@@ -42,7 +42,7 @@ function openBigPhoto () {
 }
 
 const loadComments = (commentsData) => {
-  for (let i = 0; i < commentsData.count; i++) {
+  for (let i = 0; i < commentsData.length; i++) {
     renderComments(commentsData[i]);
   }
 };
