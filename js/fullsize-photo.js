@@ -64,7 +64,7 @@ const renderBigPhoto = (dataPhoto) => {
   descriptionPhoto.textContent = dataPhoto.description;
   const commentsData = dataPhoto.comments;
   allCommentsCount.textContent = commentsData.length;
-  return commentsData;
+  loadComments(commentsData);
 };
 
 export { renderBigPhoto, openBigPhoto, loadComments, bodyTag };
