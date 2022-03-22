@@ -11,10 +11,11 @@ const createThumbnail = (data) => {
   const newThumbnail = newTemplate.cloneNode(true);
   const imgUrl = newThumbnail.querySelector('.picture__img');
   const likesCount = newThumbnail.querySelector('.picture__likes');
-  const commentsCount = newThumbnail.querySelector('.picture__comments');
+  const pictureComments = newThumbnail.querySelector('.picture__comments');
+  pictureComments.textContent = data.comments.length;
   imgUrl.src = data.url;
   likesCount.textContent = data.likes;
-  commentsCount.textContent = data.comments.length;
+
   newThumbnail.addEventListener('click', () => {
     openBigPhoto();
     renderBigPhoto(data);
