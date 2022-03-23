@@ -10,7 +10,7 @@ const bigImage = bigPicture.querySelector('img');
 const closeButton = document.querySelector('#picture-cancel');
 const listComments = document.querySelector('.social__comment-count');
 const allCommentsCount = document.querySelector('.comments-count');
-// const loadedComments = document.querySelector('.load__comments-count');
+const loadedComments = document.querySelector('.load__comments-count');
 const commentsLoad = document.querySelector('.comments-loader');
 const bodyTag = document.querySelector('body');
 
@@ -41,9 +41,27 @@ function openBigPhoto () {
   document.addEventListener('keydown', onBigPhotoEscKeydown);
 }
 
-const loadComments = (commentsData) => {
-  for (let i = 0; i < commentsData.length; i++) {
-    renderComments(commentsData[i]);
+const loadComments = (comments) => {
+  let i = 0;
+  if (comments.length <= 5) {
+    commentsLoad.classList.add('hidden');
+  }
+  for (i; i < 5; i++) {
+    if (i === comments.length) {break;}
+    renderComments(comments[i]);
+    loadedComments.textContent = i + 1;
+  }
+  if (comments.length > 5) {
+    commentsLoad.addEventListener('click', () => {
+      for (i; i <= comments.length; i++) {
+        if (i === comments.length) {
+          commentsLoad.classList.add('hidden');
+          break;
+        }
+        renderComments(comments[i]);
+        loadedComments.textContent = i + 1;
+      }
+    });
   }
 };
 
