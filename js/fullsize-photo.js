@@ -85,4 +85,4 @@ const renderBigPhoto = (dataPhoto) => {
   loadComments(commentsData);
 };
 
-export { renderBigPhoto, openBigPhoto, loadComments, bodyTag };
+export { renderBigPhoto, openBigPhoto, bodyTag };
