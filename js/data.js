@@ -5,7 +5,7 @@ const MAX_AVATAR_COUNT = 6;
 const MIN_LIKES_COUNT = 15;
 const MAX_LIKES_COUNT = 200;
 const PHOTOS_COUNT = 25;
-const COMMENTS_COUNT = 3;
+const COMMENTS_COUNT = 12;
 const COMMENT_MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',

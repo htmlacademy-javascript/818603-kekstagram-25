@@ -55,7 +55,7 @@ function loadComments(comments) {
   return comments;
 }
 
-function loadMoreComments() {
+function loadMoreComments(comments) {
   if (comments.length > 5) {
     for (let i = containerComments.children.length; i <= comments.length; i++) {
       if (containerComments.children.length % 5 === 0) {
