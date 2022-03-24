@@ -1,7 +1,7 @@
 import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
-const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
+const MAXLENGTH_HASHTAGS_SYMBOLS = 5;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
 const form = document.querySelector('.img-upload__form');
@@ -17,30 +17,24 @@ const re = /^#[A-Za-zA-Яа-яËё0-9]{1,19}$/;
 
 const checkLength = (value, maxLength) => value.length <= maxLength;
 
-const checkMinLength = (string) => string.split(' ').filter((item) => item !== '').every((item) => item.length >= MINLENGTH_HASHTAGS_SYMBOLS);
+const getTags = (string) => string.split(' ').filter((item) => item !== '');
 
-const checkMaxLength = (string) => string.split(' ').filter((item) => item !== '').every((item) => checkLength(item, MAXLENGTH_HASHTAGS_SYMBOLS));
+const checkMinLength = (string) => getTags(string).every((item) => item.length >= MINLENGTH_HASHTAGS_SYMBOLS);
 
-const checkHashtag = (string) => string.split(' ').filter((item) => item !== '').every((item) => item[0] === '#');
+const checkMaxLength = (string) => getTags(string).every((item) => checkLength(item, MAXLENGTH_HASHTAGS_SYMBOLS));
 
-const checkSymbols = (string) => string.split(' ').filter((item) => item !== '').every((item) => {
-  if (item.length > 1) {
-    return re.test(item);
-  }
-  return true;
-});
+const checkHashtag = (string) => getTags(string).every((item) => item[0] === '#');
+
+const checkSymbols = (string) => getTags(string).every((item) => item.length <= 1 || re.test(item));
 
 const checkUniq = (string) => {
-  const hashtags = string.split(' ').filter((item) => item !== '');
+  const hashtags = getTags(string);
   return hashtags.length === new Set(hashtags).size;
 };
 
 const checkCount = (string) => {
-  const hashtags = string.split(' ').filter((item) => item !== '');
-  if (hashtags.length > HASGTAGS_COUNTS) {
-    return false;
-  }
-  return true;
+  const hashtags = getTags(string);
+  return hashtags.length <= HASGTAGS_COUNTS || !hashtags.length > HASGTAGS_COUNTS;
 };
 
 const validateForm = () => {
@@ -51,8 +45,8 @@ const validateForm = () => {
 
   pristine.addValidator(hashtag, checkCount, 'max 5 hashtags');
   pristine.addValidator(hashtag, checkHashtag, 'begin with #');
-  pristine.addValidator(hashtag, checkMinLength, 'hashtag length min 2 symbols');
-  pristine.addValidator(hashtag, checkMaxLength, 'hashtag length max 20 symbols');
+  pristine.addValidator(hashtag, checkMinLength, 'hashtag min length 2 symbols');
+  pristine.addValidator(hashtag, checkMaxLength, 'hashtag max length 20 symbols');
   pristine.addValidator(hashtag, checkSymbols, 'wrong symbol');
   pristine.addValidator(hashtag, checkUniq, 'this hashtag already exist');
 
