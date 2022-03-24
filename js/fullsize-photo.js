@@ -30,6 +30,7 @@ function closeBigPhoto () {
   containerComments.innerHTML = '';
   closeButton.removeEventListener('click', closeBigPhoto);
   document.removeEventListener('keydown', onBigPhotoEscKeydown);
+  commentsLoad.removeEventListener('click', loadMoreComments);
 }
 
 function openBigPhoto () {
@@ -39,42 +40,45 @@ function openBigPhoto () {
   bodyTag.classList.add('modal-open');
   closeButton.addEventListener('click', closeBigPhoto);
   document.addEventListener('keydown', onBigPhotoEscKeydown);
+  commentsLoad.addEventListener('click', loadMoreComments);
 }
 
-const loadComments = (comments) => {
+function loadComments(comments) {
   if (comments.length <= 5) {
     commentsLoad.classList.add('hidden');
   }
   for (let i = 0; i < 5; i++) {
-    if (i === comments.length) {break;}
+    if (i === comments.length) { break; }
     renderComments(comments[i]);
     loadedComments.textContent = i + 1;
   }
+  return comments;
+}
+
+function loadMoreComments() {
   if (comments.length > 5) {
-    commentsLoad.addEventListener('click', () => {
-      for (let i = containerComments.children.length; i <= comments.length; i++) {
-        if (containerComments.children.length % 5 === 0) {
-          for (let j = 0; j < 5; j++) {
-            renderComments(comments[i]);
-            i += 1;
-            loadedComments.textContent = i;
-            if (i === comments.length) {
-              commentsLoad.classList.add('hidden');
-              {break;}
-            }
+    for (let i = containerComments.children.length; i <= comments.length; i++) {
+      if (containerComments.children.length % 5 === 0) {
+        for (let j = 0; j < 5; j++) {
+          renderComments(comments[i]);
+          i += 1;
+          loadedComments.textContent = i;
+          if (i === comments.length) {
+            commentsLoad.classList.add('hidden');
+            { break; }
           }
-          {break;}
         }
-        renderComments(comments[i]);
-        loadedComments.textContent = i;
-        if (i === comments.length) {
-          commentsLoad.classList.add('hidden');
-          {break;}
-        }
+        { break; }
       }
-    });
+      renderComments(comments[i]);
+      loadedComments.textContent = i;
+      if (i === comments.length) {
+        commentsLoad.classList.add('hidden');
+        { break; }
+      }
+    }
   }
-};
+}
 
 function renderComments(dataComment) {
   const newComment = newTemplate.cloneNode(true);
