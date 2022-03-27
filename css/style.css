@@ -532,7 +532,7 @@ main {
   bottom: 9px;
   left: 50%;
 
-  padding: 7px 11px 0;
+  padding: 7px 11px;
 
   width: 495px;
   height: 34px;
@@ -1415,4 +1415,12 @@ main {
 
 .hidden {
   display: none;
+}
+
+/* validate form */
+
+.pristine-error {
+  margin-top: -20px;
+  text-transform: lowercase;
+  color:#e90000;
 }

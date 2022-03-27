@@ -1,7 +1,7 @@
 import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
-const MAXLENGTH_HASHTAGS_SYMBOLS = 5;
+const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
 const form = document.querySelector('.img-upload__form');
