@@ -1,7 +1,7 @@
-import { getPhotosDescriptions, PHOTOS_COUNT } from './data.js';
+
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
 
-const photosData = getPhotosDescriptions(PHOTOS_COUNT);
+
 const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
@@ -23,11 +23,24 @@ const createThumbnail = (data) => {
   return newThumbnail;
 };
 
-const renderThumbnails = () => {
-  const thumbnails = photosData.map(createThumbnail);
-  thumbnailListFragment.append(...thumbnails);
-  thumbnailContainer.append(thumbnailListFragment);
+// const renderThumbnails = (photosData) => {
+//   const thumbnails = photosData.map(createThumbnail);
+//   thumbnailListFragment.append(...thumbnails);
+//   thumbnailContainer.append(thumbnailListFragment);
+// };
+
+// export { renderThumbnails };
+
+const getPhotosData = () => {
+  fetch('https://25.javascript.pages.academy/kekstagram/data')
+    .then((response) => response.json())
+    .then((photosData) => {
+      const thumbnails = photosData.map(createThumbnail);
+      thumbnailListFragment.append(...thumbnails);
+      thumbnailContainer.append(thumbnailListFragment);
+    });
 };
 
-export { renderThumbnails };
+export { getPhotosData };
+
 
