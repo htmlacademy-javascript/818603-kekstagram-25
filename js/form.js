@@ -309,4 +309,4 @@ const initializeForm = () => {
   validateForm();
 };
 
-export { initializeForm };
+export { initializeForm, closeUpload, offSuccessError, onSuccessErrorEscKeydown };
