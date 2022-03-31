@@ -1,4 +1,3 @@
-// import { createThumbnails } from './create-thumbnails.js';
 import { isEscapeKey } from './util.js';
 
 const commentTemplate = document.querySelector('#comment').content;

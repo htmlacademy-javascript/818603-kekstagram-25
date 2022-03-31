@@ -12,44 +12,43 @@ const editPhoto = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview').querySelector('img');
 const hashtag = document.querySelector('.text__hashtags');
 const imagePreview = document.querySelector('.img-upload__preview img');
-// const closeSuccess = document.querySelector('.success__button');
 const re = /^#[A-Za-zA-Яа-яËё0-9]{1,19}$/;
 
-function onSuccessEscKeydown(evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    offSuccess();
-  }
-}
-
-function offSuccess() {
-  bodyTag.lastElementChild.remove();
-  document.removeEventListener('keydown', onSuccessEscKeydown);
-}
-
-const removePopup = (evt) => {
-  const successPopup = bodyTag.lastElementChild.querySelector('div');
-  const button = bodyTag.lastElementChild.querySelector('button');
-  if(!successPopup.contains(evt.target) || button.contains(evt.target)) {
-    bodyTag.lastElementChild.remove();
-    document.removeEventListener('click', removePopup);
+const offSuccessError = (evt) => {
+  const successErrorPopup = bodyTag.lastElementChild.querySelector('div');
+  const closeButton = bodyTag.lastElementChild.querySelector('button');
+  if(!successErrorPopup.contains(evt.target) || closeButton.contains(evt.target)) {
+    removePopup();
   }
 };
+
+function removePopup() {
+  bodyTag.lastElementChild.remove();
+  document.removeEventListener('click', offSuccessError);
+  document.removeEventListener('keydown', onSuccessErrorEscKeydown);
+}
+
+function onSuccessErrorEscKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    removePopup();
+  }
+}
 
 function onSuccess() {
   closeUpload();
   const successPopupTemplate = document.querySelector('#success').content.cloneNode(true);
   bodyTag.append(successPopupTemplate);
-  document.addEventListener('click', removePopup);
-  document.addEventListener('keydown', onSuccessEscKeydown);
+  document.addEventListener('click', offSuccessError);
+  document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
 function onError() {
   closeUpload();
-  const errorPopUp = document.querySelector('#error').content.cloneNode(true);
-  bodyTag.append(errorPopUp);
-  document.addEventListener('click', removePopup);
-  document.addEventListener('keydown', onSuccessEscKeydown);
+  const errorPopup = document.querySelector('#error').content.cloneNode(true);
+  bodyTag.append(errorPopup);
+  document.addEventListener('click', offSuccessError);
+  document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
 //validate form
@@ -89,6 +88,8 @@ const validateForm = () => {
   pristine.addValidator(hashtag, checkSymbols, 'wrong symbol');
   pristine.addValidator(hashtag, checkUniq, 'this hashtag already exist');
 
+  // end validate form
+
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const valid = pristine.validate();
@@ -106,9 +107,9 @@ const validateForm = () => {
           if (responce.ok) {
             onSuccess();
             submitButton.disabled = false;
-          } else {
-            onError();
+            return responce;
           }
+          throw new Error;
         })
         .catch(() => {
           onError();
@@ -117,8 +118,6 @@ const validateForm = () => {
     }
   });
 };
-
-// end validate form
 
 // scale preview image
 

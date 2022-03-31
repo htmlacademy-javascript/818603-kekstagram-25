@@ -23,14 +23,6 @@ const createThumbnail = (data) => {
   return newThumbnail;
 };
 
-// const renderThumbnails = (photosData) => {
-//   const thumbnails = photosData.map(createThumbnail);
-//   thumbnailListFragment.append(...thumbnails);
-//   thumbnailContainer.append(thumbnailListFragment);
-// };
-
-// export { renderThumbnails };
-
 const getPhotosData = () => {
   fetch('https://25.javascript.pages.academy/kekstagram/data')
     .then((response) => response.json())

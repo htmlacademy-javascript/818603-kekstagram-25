@@ -3,4 +3,3 @@ import  { initializeForm } from './form.js';
 
 getPhotosData();
 initializeForm();
-
