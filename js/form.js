@@ -2,6 +2,7 @@ import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
 const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
+const MAXLENGTH_DESCRIPTION_SYMBOLS = 140;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
 const form = document.querySelector('.img-upload__form');
@@ -14,17 +15,17 @@ const hashtag = document.querySelector('.text__hashtags');
 const imagePreview = document.querySelector('.img-upload__preview img');
 const re = /^#[A-Za-zA-Яа-яËё0-9]{1,19}$/;
 
-const offSuccessError = (evt) => {
-  const successErrorPopup = bodyTag.lastElementChild.querySelector('div');
+const closeSuccessOrErrorPopup = (evt) => {
+  const successOrErrorPopup = bodyTag.lastElementChild.querySelector('div');
   const closeButton = bodyTag.lastElementChild.querySelector('button');
-  if(!successErrorPopup.contains(evt.target) || closeButton.contains(evt.target)) {
+  if(!successOrErrorPopup.contains(evt.target) || closeButton.contains(evt.target)) {
     removePopup();
   }
 };
 
 function removePopup() {
   bodyTag.lastElementChild.remove();
-  document.removeEventListener('click', offSuccessError);
+  document.removeEventListener('click', closeSuccessOrErrorPopup);
   document.removeEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
@@ -35,19 +36,19 @@ function onSuccessErrorEscKeydown(evt) {
   }
 }
 
-function onSuccess() {
+function onSuccessPopup() {
   closeUpload();
   const successPopupTemplate = document.querySelector('#success').content.cloneNode(true);
   bodyTag.append(successPopupTemplate);
-  document.addEventListener('click', offSuccessError);
+  document.addEventListener('click', closeSuccessOrErrorPopup);
   document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
-function onError() {
+function onErrorPopup() {
   closeUpload();
   const errorPopup = document.querySelector('#error').content.cloneNode(true);
   bodyTag.append(errorPopup);
-  document.addEventListener('click', offSuccessError);
+  document.addEventListener('click', closeSuccessOrErrorPopup);
   document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
@@ -57,9 +58,11 @@ const checkLength = (value, maxLength) => value.length <= maxLength;
 
 const getTags = (string) => string.split(' ').filter((item) => item !== '');
 
-const checkMinLength = (string) => getTags(string).every((item) => item.length >= MINLENGTH_HASHTAGS_SYMBOLS);
+const checkMinlength = (string) => getTags(string).every((item) => item.length >= MINLENGTH_HASHTAGS_SYMBOLS);
 
-const checkMaxLength = (string) => getTags(string).every((item) => checkLength(item, MAXLENGTH_HASHTAGS_SYMBOLS));
+const checkHashtagMaxlength = (string) => getTags(string).every((item) => checkLength(item, MAXLENGTH_HASHTAGS_SYMBOLS));
+
+const checkDescriptionMaxlength = (string) => string.length <= MAXLENGTH_DESCRIPTION_SYMBOLS;
 
 const checkHashtag = (string) => getTags(string).every((item) => item[0] === '#');
 
@@ -83,10 +86,11 @@ const validateForm = () => {
 
   pristine.addValidator(hashtag, checkCount, 'max 5 hashtags');
   pristine.addValidator(hashtag, checkHashtag, 'begin with #');
-  pristine.addValidator(hashtag, checkMinLength, 'hashtag min length 2 symbols');
-  pristine.addValidator(hashtag, checkMaxLength, 'hashtag max length 20 symbols');
+  pristine.addValidator(hashtag, checkMinlength, 'hashtag min length 2 symbols');
+  pristine.addValidator(hashtag, checkHashtagMaxlength, 'hashtag max length 20 symbols');
   pristine.addValidator(hashtag, checkSymbols, 'wrong symbol');
   pristine.addValidator(hashtag, checkUniq, 'this hashtag already exist');
+  pristine.addValidator(description, checkDescriptionMaxlength, 'comments length max 140 symbols');
 
   // end validate form
 
@@ -105,14 +109,13 @@ const validateForm = () => {
       )
         .then((responce) => {
           if (responce.ok) {
-            onSuccess();
+            onSuccessPopup(responce.data);
             submitButton.disabled = false;
-            return responce;
           }
           throw new Error;
         })
         .catch(() => {
-          onError();
+          onErrorPopup();
           submitButton.disabled = false;
         });
     }
@@ -175,6 +178,41 @@ slider.noUiSlider.on('update', () => {
   imagePreview.style.filter = `${filter}(${effect.value}${units})`;
 });
 
+const filtersConfig = {
+  chromeAndSepia: {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+  },
+  marvin: {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+  },
+  phobos: {
+    range: {
+      min: 0,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+  },
+  heat: {
+    range: {
+      min: 1,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+  }
+};
+
 const handlerEffects = (evt) => {
   if (evt.target.checked) {
     if (evt.target.value === 'none') {
@@ -192,53 +230,25 @@ const handlerEffects = (evt) => {
         filter = 'grayscale';
       } else { filter = evt.target.value; }
       units = '';
-      slider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: 1,
-        },
-        start: 1,
-        step: 0.1,
-      });
+      slider.noUiSlider.updateOptions(filtersConfig.chromeAndSepia);
     }
     if (evt.target.value === 'marvin') {
       imagePreview.style.filter = '';
       filter = 'invert';
       units = '%';
-      slider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: 100,
-        },
-        start: 100,
-        step: 1,
-      });
+      slider.noUiSlider.updateOptions(filtersConfig.marvin);
     }
     if (evt.target.value === 'phobos') {
       imagePreview.style.filter = '';
       filter = 'blur';
       units = 'px';
-      slider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: 3,
-        },
-        start: 3,
-        step: 0.1,
-      });
+      slider.noUiSlider.updateOptions(filtersConfig.phobos);
     }
     if (evt.target.value === 'heat') {
       imagePreview.style.filter = '';
       filter = 'brightness';
       units = '';
-      slider.noUiSlider.updateOptions({
-        range: {
-          min: 1,
-          max: 3,
-        },
-        start: 3,
-        step: 0.1,
-      });
+      slider.noUiSlider.updateOptions(filtersConfig.heat);
     }
   }
 };
@@ -309,4 +319,4 @@ const initializeForm = () => {
   validateForm();
 };
 
-export { initializeForm, closeUpload, offSuccessError, onSuccessErrorEscKeydown };
+export { initializeForm, closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown };

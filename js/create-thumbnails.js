@@ -1,6 +1,6 @@
 
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
-import { closeUpload, offSuccessError, onSuccessErrorEscKeydown } from './form.js';
+import { closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown } from './form.js';
 import { bodyTag } from './fullsize-photo.js';
 
 const thumbnailContainer = document.querySelector('.pictures');
@@ -27,30 +27,19 @@ const createThumbnail = (data) => {
 function onErrorLoad() {
   closeUpload();
   const errorPopup = document.querySelector('#error').content.cloneNode(true);
-  errorPopup.querySelector('.error__button').innerText = 'закрыть';
   errorPopup.querySelector('.error__title').textContent = 'ошибка загрузки';
+  errorPopup.querySelector('.error__button').textContent = 'закрыть';
   bodyTag.append(errorPopup);
-  document.addEventListener('click', offSuccessError);
+  document.addEventListener('click', closeSuccessOrErrorPopup);
   document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
-const getPhotosData = () => {
-  fetch('https://25.javascript.pages.academy/kekstagram/data')
-    .then((response) => {
-      if (response.ok) {
-        return response;
-      }
-      throw new Error;
-    })
-    .then((response) => response.json())
-    .then((photosData) => {
-      const thumbnails = photosData.map(createThumbnail);
-      thumbnailListFragment.append(...thumbnails);
-      thumbnailContainer.append(thumbnailListFragment);
-    })
-    .catch(() => onErrorLoad());
+const renderThumbnails = (photosData) => {
+  const thumbnails = photosData.map(createThumbnail);
+  thumbnailListFragment.append(...thumbnails);
+  thumbnailContainer.append(thumbnailListFragment);
 };
 
-export { getPhotosData };
+export { renderThumbnails, onErrorLoad };
 
 

@@ -1,4 +1,4 @@
-import { getPhotosData } from './create-thumbnails.js';
+import { getPhotosData } from './api.js';
 import  { initializeForm } from './form.js';
 
 getPhotosData();
