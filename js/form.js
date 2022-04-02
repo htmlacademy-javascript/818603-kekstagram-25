@@ -109,8 +109,9 @@ const validateForm = () => {
       )
         .then((responce) => {
           if (responce.ok) {
-            onSuccessPopup(responce.data);
+            onSuccessPopup();
             submitButton.disabled = false;
+            return responce;
           }
           throw new Error;
         })
