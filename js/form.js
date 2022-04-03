@@ -108,12 +108,11 @@ const validateForm = () => {
         },
       )
         .then((responce) => {
-          if (responce.ok) {
-            onSuccessPopup();
-            submitButton.disabled = false;
-            return responce;
+          if (!responce.ok) {
+            throw new Error;
           }
-          throw new Error;
+          onSuccessPopup();
+          submitButton.disabled = false;
         })
         .catch(() => {
           onErrorPopup();
@@ -129,28 +128,24 @@ const buttonDecreasePreview = document.querySelector('.scale__control--smaller')
 const buttonIncreasePreview = document.querySelector('.scale__control--bigger');
 const imageScaleValue = document.querySelector('.scale__control--value');
 
-let scalePreviewInteger = 1;
-
 function reducePreview() {
-  scalePreviewInteger -= 0.25;
-  if (scalePreviewInteger === 0.25) {
-    buttonDecreasePreview.removeEventListener('click', reducePreview);
-  }
   imageScaleValue.value = parseFloat(imageScaleValue.value);
   imageScaleValue.value -= 25;
   imageScaleValue.value += '%';
-  imagePreview.style.transform = `scale(${scalePreviewInteger})`;
+  imagePreview.style.transform = `scale(${imageScaleValue.value})`;
   buttonIncreasePreview.addEventListener('click', increasePreview);
+  if (imageScaleValue.value === '25%') {
+    buttonDecreasePreview.removeEventListener('click', reducePreview);
+  }
 }
 
 function increasePreview() {
-  scalePreviewInteger += 0.25;
   imageScaleValue.value = parseFloat(imageScaleValue.value);
   imageScaleValue.value = parseFloat(imageScaleValue.value, 10) + 25;
   imageScaleValue.value += '%';
-  imagePreview.style.transform = `scale(${scalePreviewInteger}`;
+  imagePreview.style.transform = `scale(${imageScaleValue.value}`;
   buttonDecreasePreview.addEventListener('click', reducePreview);
-  if (scalePreviewInteger === 1) {
+  if (imageScaleValue.value === '100%') {
     buttonIncreasePreview.removeEventListener('click', increasePreview);
   }
 }
@@ -179,78 +174,88 @@ slider.noUiSlider.on('update', () => {
   imagePreview.style.filter = `${filter}(${effect.value}${units})`;
 });
 
-const filtersConfig = {
-  chromeAndSepia: {
-    range: {
-      min: 0,
-      max: 1,
+const filtersSettings = {
+  chrome: {
+    config: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
     },
-    start: 1,
-    step: 0.1,
+    filter: 'grayscale',
+    units: ''
+  },
+  sepia: {
+    config: {
+      range: {
+        min: 0,
+        max: 1,
+      },
+      start: 1,
+      step: 0.1,
+    },
+    filter: 'sepia',
+    units: ''
   },
   marvin: {
-    range: {
-      min: 0,
-      max: 100,
+    config: {
+      range: {
+        min: 0,
+        max: 100,
+      },
+      start: 100,
+      step: 1,
     },
-    start: 100,
-    step: 1,
+    filter: 'invert',
+    units: '%'
   },
   phobos: {
-    range: {
-      min: 0,
-      max: 3,
+    config: {
+      range: {
+        min: 0,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
     },
-    start: 3,
-    step: 0.1,
+    filter: 'blur',
+    units: 'px'
   },
   heat: {
-    range: {
-      min: 1,
-      max: 3,
+    config: {
+      range: {
+        min: 1,
+        max: 3,
+      },
+      start: 3,
+      step: 0.1,
     },
-    start: 3,
-    step: 0.1,
+    filter: 'brightness',
+    units: ''
   }
 };
 
+const resetEffects = (evt) => {
+  imagePreview.removeAttribute('class');
+  imagePreview.classList.add(`effects__preview--${evt.target.value}`);
+  imagePreview.style.filter = '';
+};
+
 const handlerEffects = (evt) => {
-  if (evt.target.checked) {
-    if (evt.target.value === 'none') {
-      sliderElement.classList.add('hidden');
-      imagePreview.style.filter = '';
-    }
-    if (evt.target.value !== 'none') {
-      sliderElement.classList.remove('hidden');
-    }
-    imagePreview.removeAttribute('class');
-    imagePreview.classList.add(`effects__preview--${evt.target.value}`);
-    if (evt.target.value === 'chrome' || evt.target.value === 'sepia') {
-      imagePreview.style.filter = '';
-      if (evt.target.value === 'chrome') {
-        filter = 'grayscale';
-      } else { filter = evt.target.value; }
-      units = '';
-      slider.noUiSlider.updateOptions(filtersConfig.chromeAndSepia);
-    }
-    if (evt.target.value === 'marvin') {
-      imagePreview.style.filter = '';
-      filter = 'invert';
-      units = '%';
-      slider.noUiSlider.updateOptions(filtersConfig.marvin);
-    }
-    if (evt.target.value === 'phobos') {
-      imagePreview.style.filter = '';
-      filter = 'blur';
-      units = 'px';
-      slider.noUiSlider.updateOptions(filtersConfig.phobos);
-    }
-    if (evt.target.value === 'heat') {
-      imagePreview.style.filter = '';
-      filter = 'brightness';
-      units = '';
-      slider.noUiSlider.updateOptions(filtersConfig.heat);
-    }
+  if (evt.target.value === 'none') {
+    sliderElement.classList.add('hidden');
+    resetEffects(evt);
+  }
+  if (evt.target.value !== 'none' ) {
+    sliderElement.classList.remove('hidden');
+    resetEffects(evt);
+    const filterType = evt.target.value;
+    const filterConfig = filtersSettings[filterType];
+    filter = filterConfig.filter;
+    units = filterConfig.units;
+    slider.noUiSlider.updateOptions(filterConfig.config);
   }
 };
 
@@ -300,6 +305,7 @@ function closeUpload () {
   imagePreview.removeAttribute('class');
   document.querySelector('#effect-none').checked = true;
   imageScaleValue.value = '100%';
+  // scalePreviewInteger = 1;
   description.addEventListener('input', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
   });
@@ -309,7 +315,6 @@ function closeUpload () {
   effectsList.removeEventListener('change', handlerEffects);
   buttonDecreasePreview.removeEventListener('click', reducePreview);
   buttonIncreasePreview.removeEventListener('click', increasePreview);
-  scalePreviewInteger = 1;
   document.removeEventListener('keydown', onUploadEscKeydown);
 }
 
