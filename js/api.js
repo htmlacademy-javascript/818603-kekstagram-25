@@ -1,4 +1,4 @@
-import { renderThumbnails, onErrorLoad } from './create-thumbnails.js';
+import { renderThumbnails, onErrorLoad, showFilteredThumbnails } from './create-thumbnails.js';
 
 const getPhotosData = () => {
   fetch('https://25.javascript.pages.academy/kekstagram/data')
@@ -9,8 +9,11 @@ const getPhotosData = () => {
       throw new Error;
     })
     .then((response) => response.json())
-    .then((photosData) => renderThumbnails(photosData))
-    .catch(() => onErrorLoad());
+    .then((photosData) => {
+      renderThumbnails(photosData);
+      showFilteredThumbnails(photosData);
+    })
+    .catch(onErrorLoad);
 };
 
 export { getPhotosData };
