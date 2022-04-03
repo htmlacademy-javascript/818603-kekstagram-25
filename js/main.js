@@ -1,5 +1,5 @@
-import { renderThumbnails } from './create-thumbnails.js';
+import { getPhotosData } from './api.js';
 import  { initializeForm } from './form.js';
 
-renderThumbnails();
+getPhotosData();
 initializeForm();
