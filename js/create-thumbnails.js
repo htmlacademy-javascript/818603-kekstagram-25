@@ -2,9 +2,10 @@
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
 import { closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown } from './form.js';
 import { bodyTag } from './fullsize-photo.js';
-import  { getRandomInt, debounce } from './util.js';
+import  { debounce, shuffleArray } from './util.js';
 
 const RERENDER_DELAY = 500;
+const RANDOM_THUMBNAILS = 10;
 const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
@@ -42,6 +43,11 @@ const filterButtonDefault = filterThumbnails.querySelector('#filter-default');
 const filterRandomButton = filterThumbnails.querySelector('#filter-random');
 const filterButtonDiscussed = filterThumbnails.querySelector('#filter-discussed');
 
+const clearThumbnailsContainer = () => {
+  const elements = thumbnailContainer.querySelectorAll('.picture');
+  [...elements].forEach((item) => item.remove());
+};
+
 const renderThumbnails = debounce ((photosData) => {
   const thumbnails = photosData.map(createThumbnail);
   thumbnailListFragment.append(...thumbnails);
@@ -49,8 +55,7 @@ const renderThumbnails = debounce ((photosData) => {
 }, RERENDER_DELAY);
 
 const showThumbnails = (data) => {
-  const elements = thumbnailContainer.getElementsByTagName('a');
-  [...elements].forEach((item) => item.remove());
+  clearThumbnailsContainer();
   filterRandomButton.classList.remove('img-filters__button--active');
   filterButtonDiscussed.classList.remove('img-filters__button--active');
   filterButtonDefault.classList.add('img-filters__button--active');
@@ -58,23 +63,16 @@ const showThumbnails = (data) => {
 };
 
 const showRandomThumbnails = (data) => {
-  const elements = thumbnailContainer.getElementsByTagName('a');
-  [...elements].forEach((item) => item.remove());
-  const random = [];
-  while (random.length < 10) {
-    const item = data[getRandomInt(0, data.length - 1)];
-    if (random.includes(item)) { continue; }
-    random.push(item);
-  }
+  clearThumbnailsContainer();
   filterButtonDefault.classList.remove('img-filters__button--active');
   filterButtonDiscussed.classList.remove('img-filters__button--active');
   filterRandomButton.classList.add('img-filters__button--active');
+  const random = shuffleArray(data).slice(0, RANDOM_THUMBNAILS);
   renderThumbnails(random);
 };
 
 const showDiscussedThumbnails = (data) => {
-  const elements = thumbnailContainer.getElementsByTagName('a');
-  [...elements].forEach((item) => item.remove());
+  clearThumbnailsContainer();
   filterButtonDefault.classList.remove('img-filters__button--active');
   filterRandomButton.classList.remove('img-filters__button--active');
   filterButtonDiscussed.classList.add('img-filters__button--active');

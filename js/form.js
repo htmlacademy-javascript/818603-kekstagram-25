@@ -5,6 +5,8 @@ const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
 const MAXLENGTH_DESCRIPTION_SYMBOLS = 140;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const fileChooser = document.querySelector('#upload-file');
 const form = document.querySelector('.img-upload__form');
 const submitButton = form.querySelector('.img-upload__submit');
 const openForm = document.querySelector('#upload-file');
@@ -283,8 +285,19 @@ const onFocusBlurEscKeydown = () => {
   });
 };
 
-function openUpload (evt) {
-  preview.src = URL.createObjectURL(evt.target.files[0]);
+
+fileChooser.addEventListener('change', () => {
+  const file = fileChooser.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    preview.src = URL.createObjectURL(file);
+  }
+});
+
+function openUpload () {
   sliderElement.classList.add('hidden');
   editPhoto.classList.remove('hidden');
   bodyTag.classList.add('modal-open');
@@ -305,7 +318,6 @@ function closeUpload () {
   imagePreview.removeAttribute('class');
   document.querySelector('#effect-none').checked = true;
   imageScaleValue.value = '100%';
-  // scalePreviewInteger = 1;
   description.addEventListener('input', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
   });

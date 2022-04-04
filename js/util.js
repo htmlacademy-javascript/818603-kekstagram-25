@@ -1,9 +1,3 @@
-const getRandomInt = function (first, second) {
-  const min = (first < second) ? Math.ceil(first) : Math.floor(second);
-  const max = (first > second) ? Math.ceil(first) : Math.floor(second);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
 const debounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
@@ -12,6 +6,16 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+};
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export { isEscapeKey, getRandomInt, debounce };
+export { isEscapeKey, debounce, shuffleArray };
