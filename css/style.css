@@ -1420,7 +1420,7 @@ main {
 /* validate form */
 
 .pristine-error {
-  margin-top: -22px;
+  margin-top: -20px;
   text-transform: lowercase;
   color:#e90000;
 }

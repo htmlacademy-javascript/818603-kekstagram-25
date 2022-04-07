@@ -2,7 +2,7 @@ import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
 const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
-const MAXLENGTH_DESCRIPTION_SYMBOLS = 140;
+const MAXLENGTH_DESCRIPTION_SYMBOLS = 3;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -98,8 +98,8 @@ const validateForm = () => {
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    const valid = pristine.validate();
-    if (valid) {
+    const validHashtag = pristine.validate();
+    if (validHashtag) {
       const formData = new FormData(evt.target);
       submitButton.disabled = true;
       fetch(
@@ -308,6 +308,7 @@ function openUpload () {
 }
 
 function closeUpload () {
+  preview.src = 'img/upload-default-image.jpg';
   editPhoto.classList.add('hidden');
   bodyTag.classList.remove('modal-open');
   openForm.value = '';
