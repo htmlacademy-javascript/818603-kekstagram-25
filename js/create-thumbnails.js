@@ -2,9 +2,8 @@
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
 import { closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown } from './form.js';
 import { bodyTag } from './fullsize-photo.js';
-import  { debounce, shuffleArray } from './util.js';
+import  { shuffleArray } from './util.js';
 
-const RERENDER_DELAY = 500;
 const RANDOM_THUMBNAILS = 10;
 const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
