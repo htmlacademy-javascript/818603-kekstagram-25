@@ -9,6 +9,11 @@ const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newTemplate = thumbnailTemplate.querySelector('.picture');
+const filterThumbnailsMenu = document.querySelector('.img-filters');
+const filterThumbnails = document.querySelector('.img-filters__form');
+const filterButtonDefault = filterThumbnails.querySelector('#filter-default');
+const filterRandomButton = filterThumbnails.querySelector('#filter-random');
+const filterButtonDiscussed = filterThumbnails.querySelector('#filter-discussed');
 
 const createThumbnail = (data) => {
   const newThumbnail = newTemplate.cloneNode(true);
@@ -35,12 +40,6 @@ function onErrorLoad() {
   document.addEventListener('click', closeSuccessOrErrorPopup);
   document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
-
-const filterThumbnailsMenu = document.querySelector('.img-filters');
-const filterThumbnails = document.querySelector('.img-filters__form');
-const filterButtonDefault = filterThumbnails.querySelector('#filter-default');
-const filterRandomButton = filterThumbnails.querySelector('#filter-random');
-const filterButtonDiscussed = filterThumbnails.querySelector('#filter-discussed');
 
 const clearThumbnailsContainer = () => {
   const elements = thumbnailContainer.querySelectorAll('.picture');
