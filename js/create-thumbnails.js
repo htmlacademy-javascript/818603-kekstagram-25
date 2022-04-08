@@ -48,13 +48,13 @@ const clearThumbnailsContainer = () => {
   [...elements].forEach((item) => item.remove());
 };
 
-const renderThumbnails = debounce((photosData) => {
+const renderThumbnails = (photosData) => {
   const thumbnails = photosData.map(createThumbnail);
   thumbnailListFragment.append(...thumbnails);
   thumbnailContainer.append(thumbnailListFragment);
-}, RERENDER_DELAY);
+};
 
-const showFilteredThumbnails = (data) => {
+const showFilteredThumbnails = (cb, data) => {
   filterThumbnailsMenu.classList.remove('img-filters--inactive');
   filterThumbnailsMenu.addEventListener('click', (evt) => {
     if (evt.target === filterRandomButton && !evt.target.classList.contains('img-filters__button--active')) {
@@ -67,7 +67,7 @@ const showFilteredThumbnails = (data) => {
       }
       filterRandomButton.classList.add('img-filters__button--active');
       const random = shuffleArray(data).slice(0, RANDOM_THUMBNAILS);
-      renderThumbnails(random);
+      cb(random);
     }
     if (evt.target === filterButtonDiscussed && !evt.target.classList.contains('img-filters__button--active')) {
       clearThumbnailsContainer();
@@ -78,7 +78,7 @@ const showFilteredThumbnails = (data) => {
         filterRandomButton.classList.remove('img-filters__button--active');
       }
       filterButtonDiscussed.classList.add('img-filters__button--active');
-      renderThumbnails(data.slice().sort((a, b) => b.comments.length - a.comments.length));
+      cb(data.slice().sort((a, b) => b.comments.length - a.comments.length));
     }
     if (evt.target === filterButtonDefault && !evt.target.classList.contains('img-filters__button--active')) {
       clearThumbnailsContainer();
@@ -89,7 +89,7 @@ const showFilteredThumbnails = (data) => {
         filterButtonDiscussed.classList.remove('img-filters__button--active');
       }
       filterButtonDefault.classList.add('img-filters__button--active');
-      renderThumbnails(data);
+      cb(data);
     }
   });
 };
