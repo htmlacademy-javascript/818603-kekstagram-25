@@ -1,7 +1,4 @@
 import { renderThumbnails, onErrorLoad, showFilteredThumbnails } from './create-thumbnails.js';
-import  { debounce } from './util.js';
-
-const RERENDER_DELAY = 500;
 
 const getPhotosData = () => {
   fetch('https://25.javascript.pages.academy/kekstagram/data')
@@ -14,7 +11,7 @@ const getPhotosData = () => {
     .then((response) => response.json())
     .then((photosData) => {
       renderThumbnails(photosData);
-      showFilteredThumbnails(debounce(() => renderThumbnails(photosData), RERENDER_DELAY), photosData);
+      showFilteredThumbnails(photosData);
     })
     .catch(onErrorLoad);
 };

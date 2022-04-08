@@ -2,8 +2,9 @@
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
 import { closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown } from './form.js';
 import { bodyTag } from './fullsize-photo.js';
-import  { shuffleArray } from './util.js';
+import  { debounce, shuffleArray } from './util.js';
 
+const RERENDER_DELAY = 500;
 const RANDOM_THUMBNAILS = 10;
 const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
@@ -47,39 +48,31 @@ const clearThumbnailsContainer = () => {
 };
 
 const renderThumbnails = (photosData) => {
+  clearThumbnailsContainer();
   const thumbnails = photosData.map(createThumbnail);
   thumbnailListFragment.append(...thumbnails);
   thumbnailContainer.append(thumbnailListFragment);
 };
 
-const showFilteredThumbnails = (cb, data) => {
+const showDefaultThumbnails = debounce((data) => {
+  renderThumbnails(data);
+}, RERENDER_DELAY);
+
+const showRandomThumbnails = debounce((data) => {
+  const randomData = [...data];
+  const random = shuffleArray(randomData).slice(0, RANDOM_THUMBNAILS);
+  renderThumbnails(random);
+}, RERENDER_DELAY);
+
+const showDiscussedThumbnails = debounce((data) => {
+  const discussedData = data.slice().sort((a, b) => b.comments.length - a.comments.length);
+  renderThumbnails(discussedData);
+}, RERENDER_DELAY);
+
+const showFilteredThumbnails = (data) => {
   filterThumbnailsMenu.classList.remove('img-filters--inactive');
   filterThumbnailsMenu.addEventListener('click', (evt) => {
-    if (evt.target === filterRandomButton && !evt.target.classList.contains('img-filters__button--active')) {
-      clearThumbnailsContainer();
-      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
-        filterButtonDefault.classList.remove('img-filters__button--active');
-      }
-      if (filterButtonDiscussed.classList.contains('img-filters__button--active')) {
-        filterButtonDiscussed.classList.remove('img-filters__button--active');
-      }
-      filterRandomButton.classList.add('img-filters__button--active');
-      const random = shuffleArray(data).slice(0, RANDOM_THUMBNAILS);
-      cb(random);
-    }
-    if (evt.target === filterButtonDiscussed && !evt.target.classList.contains('img-filters__button--active')) {
-      clearThumbnailsContainer();
-      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
-        filterButtonDefault.classList.remove('img-filters__button--active');
-      }
-      if (filterRandomButton.classList.contains('img-filters__button--active')) {
-        filterRandomButton.classList.remove('img-filters__button--active');
-      }
-      filterButtonDiscussed.classList.add('img-filters__button--active');
-      cb(data.slice().sort((a, b) => b.comments.length - a.comments.length));
-    }
     if (evt.target === filterButtonDefault && !evt.target.classList.contains('img-filters__button--active')) {
-      clearThumbnailsContainer();
       if (filterRandomButton.classList.contains('img-filters__button--active')) {
         filterRandomButton.classList.remove('img-filters__button--active');
       }
@@ -87,7 +80,27 @@ const showFilteredThumbnails = (cb, data) => {
         filterButtonDiscussed.classList.remove('img-filters__button--active');
       }
       filterButtonDefault.classList.add('img-filters__button--active');
-      cb(data);
+      showDefaultThumbnails(data);
+    }
+    if (evt.target === filterRandomButton && !evt.target.classList.contains('img-filters__button--active')) {
+      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
+        filterButtonDefault.classList.remove('img-filters__button--active');
+      }
+      if (filterButtonDiscussed.classList.contains('img-filters__button--active')) {
+        filterButtonDiscussed.classList.remove('img-filters__button--active');
+      }
+      filterRandomButton.classList.add('img-filters__button--active');
+      showRandomThumbnails(data);
+    }
+    if (evt.target === filterButtonDiscussed && !evt.target.classList.contains('img-filters__button--active')) {
+      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
+        filterButtonDefault.classList.remove('img-filters__button--active');
+      }
+      if (filterRandomButton.classList.contains('img-filters__button--active')) {
+        filterRandomButton.classList.remove('img-filters__button--active');
+      }
+      filterButtonDiscussed.classList.add('img-filters__button--active');
+      showDiscussedThumbnails(data);
     }
   });
 };
