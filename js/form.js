@@ -297,7 +297,7 @@ fileChooser.addEventListener('change', () => {
   }
 });
 
-function openUpload () {
+function openUpload() {
   sliderElement.classList.add('hidden');
   editPhoto.classList.remove('hidden');
   bodyTag.classList.add('modal-open');
@@ -307,7 +307,7 @@ function openUpload () {
   document.addEventListener('keydown', onUploadEscKeydown);
 }
 
-function closeUpload () {
+function closeUpload() {
   preview.src = 'img/upload-default-image.jpg';
   editPhoto.classList.add('hidden');
   bodyTag.classList.remove('modal-open');
