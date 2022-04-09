@@ -54,24 +54,9 @@ const renderThumbnails = (photosData) => {
   thumbnailContainer.append(thumbnailListFragment);
 };
 
-const showDefaultThumbnails = debounce((data) => {
-  renderThumbnails(data);
-}, RERENDER_DELAY);
-
-const showRandomThumbnails = debounce((data) => {
-  const randomData = [...data];
-  const random = shuffleArray(randomData).slice(0, RANDOM_THUMBNAILS);
-  renderThumbnails(random);
-}, RERENDER_DELAY);
-
-const showDiscussedThumbnails = debounce((data) => {
-  const discussedData = data.slice().sort((a, b) => b.comments.length - a.comments.length);
-  renderThumbnails(discussedData);
-}, RERENDER_DELAY);
-
 const showFilteredThumbnails = (data) => {
   filterThumbnailsMenu.classList.remove('img-filters--inactive');
-  filterThumbnailsMenu.addEventListener('click', (evt) => {
+  filterThumbnailsMenu.addEventListener('click', debounce((evt) => {
     if (evt.target === filterButtonDefault && !evt.target.classList.contains('img-filters__button--active')) {
       if (filterRandomButton.classList.contains('img-filters__button--active')) {
         filterRandomButton.classList.remove('img-filters__button--active');
@@ -80,7 +65,7 @@ const showFilteredThumbnails = (data) => {
         filterButtonDiscussed.classList.remove('img-filters__button--active');
       }
       filterButtonDefault.classList.add('img-filters__button--active');
-      showDefaultThumbnails(data);
+      renderThumbnails(data);
     }
     if (evt.target === filterRandomButton && !evt.target.classList.contains('img-filters__button--active')) {
       if (filterButtonDefault.classList.contains('img-filters__button--active')) {
@@ -90,7 +75,8 @@ const showFilteredThumbnails = (data) => {
         filterButtonDiscussed.classList.remove('img-filters__button--active');
       }
       filterRandomButton.classList.add('img-filters__button--active');
-      showRandomThumbnails(data);
+      const random = shuffleArray([...data]).slice(0, RANDOM_THUMBNAILS);
+      renderThumbnails(random);
     }
     if (evt.target === filterButtonDiscussed && !evt.target.classList.contains('img-filters__button--active')) {
       if (filterButtonDefault.classList.contains('img-filters__button--active')) {
@@ -100,9 +86,10 @@ const showFilteredThumbnails = (data) => {
         filterRandomButton.classList.remove('img-filters__button--active');
       }
       filterButtonDiscussed.classList.add('img-filters__button--active');
-      showDiscussedThumbnails(data);
+      const discussedData = data.slice().sort((a, b) => b.comments.length - a.comments.length);
+      renderThumbnails(discussedData);
     }
-  });
+  }, RERENDER_DELAY));
 };
 
 export { renderThumbnails, onErrorLoad, showFilteredThumbnails };

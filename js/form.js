@@ -2,7 +2,7 @@ import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
 const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
-const MAXLENGTH_DESCRIPTION_SYMBOLS = 3;
+const MAXLENGTH_DESCRIPTION_SYMBOLS = 140;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
@@ -131,9 +131,7 @@ const buttonIncreasePreview = document.querySelector('.scale__control--bigger');
 const imageScaleValue = document.querySelector('.scale__control--value');
 
 function reducePreview() {
-  imageScaleValue.value = parseFloat(imageScaleValue.value);
-  imageScaleValue.value -= 25;
-  imageScaleValue.value += '%';
+  imageScaleValue.value = `${parseFloat(imageScaleValue.value) - 25}%`;
   imagePreview.style.transform = `scale(${imageScaleValue.value})`;
   buttonIncreasePreview.addEventListener('click', increasePreview);
   if (imageScaleValue.value === '25%') {
@@ -142,9 +140,7 @@ function reducePreview() {
 }
 
 function increasePreview() {
-  imageScaleValue.value = parseFloat(imageScaleValue.value);
-  imageScaleValue.value = parseFloat(imageScaleValue.value, 10) + 25;
-  imageScaleValue.value += '%';
+  imageScaleValue.value = `${parseFloat(imageScaleValue.value) + 25}%`;
   imagePreview.style.transform = `scale(${imageScaleValue.value}`;
   buttonDecreasePreview.addEventListener('click', reducePreview);
   if (imageScaleValue.value === '100%') {
