@@ -19,7 +19,7 @@ const onBigPhotoEscKeydown = (evt) => {
   }
 };
 
-function closeBigPhoto () {
+function closeBigPhoto() {
   containerComments.innerHTML = '';
   bigPicture.classList.add('hidden');
   listComments.classList.add('hidden');
@@ -30,7 +30,7 @@ function closeBigPhoto () {
   document.removeEventListener('keydown', onBigPhotoEscKeydown);
 }
 
-function openBigPhoto () {
+function openBigPhoto() {
   bigPicture.classList.remove('hidden');
   listComments.classList.remove('hidden');
   commentsLoad.classList.remove('hidden');

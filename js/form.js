@@ -2,9 +2,11 @@ import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
 const MAXLENGTH_HASHTAGS_SYMBOLS = 20;
-const MAXLENGTH_DESCRIPTION_SYMBOLS = 140;
+const MAXLENGTH_DESCRIPTION_SYMBOLS = 3;
 const MINLENGTH_HASHTAGS_SYMBOLS = 2;
 const HASGTAGS_COUNTS = 5;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const fileChooser = document.querySelector('#upload-file');
 const form = document.querySelector('.img-upload__form');
 const submitButton = form.querySelector('.img-upload__submit');
 const openForm = document.querySelector('#upload-file');
@@ -96,8 +98,8 @@ const validateForm = () => {
 
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    const valid = pristine.validate();
-    if (valid) {
+    const validHashtag = pristine.validate();
+    if (validHashtag) {
       const formData = new FormData(evt.target);
       submitButton.disabled = true;
       fetch(
@@ -283,8 +285,17 @@ const onFocusBlurEscKeydown = () => {
   });
 };
 
-function openUpload (evt) {
-  preview.src = URL.createObjectURL(evt.target.files[0]);
+
+fileChooser.addEventListener('change', () => {
+  const file = fileChooser.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    preview.src = URL.createObjectURL(file);
+  }
+});
+
+function openUpload() {
   sliderElement.classList.add('hidden');
   editPhoto.classList.remove('hidden');
   bodyTag.classList.add('modal-open');
@@ -294,7 +305,8 @@ function openUpload (evt) {
   document.addEventListener('keydown', onUploadEscKeydown);
 }
 
-function closeUpload () {
+function closeUpload() {
+  preview.src = 'img/upload-default-image.jpg';
   editPhoto.classList.add('hidden');
   bodyTag.classList.remove('modal-open');
   openForm.value = '';
@@ -305,7 +317,6 @@ function closeUpload () {
   imagePreview.removeAttribute('class');
   document.querySelector('#effect-none').checked = true;
   imageScaleValue.value = '100%';
-  // scalePreviewInteger = 1;
   description.addEventListener('input', () => {
     document.removeEventListener('keydown', onUploadEscKeydown);
   });
