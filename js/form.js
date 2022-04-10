@@ -1,7 +1,7 @@
 import { bodyTag } from './fullsize-photo.js';
 import { isEscapeKey } from './util.js';
 
-const URL_POST_DATA = 'https://25.javascript.pages.academy/kekstagram';
+const POST_URL = 'https://25.javascript.pages.academy/kekstagram';
 const MAX_LENGTH_HASHTAGS_SYMBOLS = 20;
 const MAX_LENGTH_DESCRIPTION_SYMBOLS = 140;
 const MIN_LENGTH_HASHTAGS_SYMBOLS = 2;
@@ -104,7 +104,7 @@ const validateForm = () => {
       const formData = new FormData(evt.target);
       submitButton.disabled = true;
       fetch(
-        URL_POST_DATA,
+        POST_URL,
         {
           method: 'POST',
           body: formData,
@@ -173,8 +173,8 @@ slider.noUiSlider.on('update', () => {
   preview.style.filter = `${filter}(${effect.value}${units})`;
 });
 
-const filtersSettings = {
-  CHROME: {
+const filterSettings = {
+  chrome: {
     config: {
       range: {
         min: 0,
@@ -186,7 +186,7 @@ const filtersSettings = {
     filter: 'grayscale',
     units: ''
   },
-  SEPIA: {
+  sepia: {
     config: {
       range: {
         min: 0,
@@ -198,7 +198,7 @@ const filtersSettings = {
     filter: 'sepia',
     units: ''
   },
-  MARVIN: {
+  marvin: {
     config: {
       range: {
         min: 0,
@@ -210,7 +210,7 @@ const filtersSettings = {
     filter: 'invert',
     units: '%'
   },
-  PHOBOS: {
+  phobos: {
     config: {
       range: {
         min: 0,
@@ -222,7 +222,7 @@ const filtersSettings = {
     filter: 'blur',
     units: 'px'
   },
-  HEAT: {
+  heat: {
     config: {
       range: {
         min: 1,
@@ -250,9 +250,9 @@ const onEffectsListChange = (evt) => {
   }
   sliderElement.classList.remove('hidden');
   resetEffects(evt);
-  const config = evt.target.value.toUpperCase();
-  const filterConfig = filtersSettings[config];
-  filter = filterConfig.filter.toLowerCase();
+  const config = evt.target.value;
+  const filterConfig = filterSettings[config];
+  filter = filterConfig.filter;
   units = filterConfig.units;
   slider.noUiSlider.updateOptions(filterConfig.config);
 
