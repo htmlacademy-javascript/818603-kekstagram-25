@@ -1,6 +1,6 @@
 
 import { renderBigPhoto, openBigPhoto } from './fullsize-photo.js';
-import { closeUpload, closeSuccessOrErrorPopup, onSuccessErrorEscKeydown } from './form.js';
+import { onCloseFormClick, onCloseSuccessErrorPopupClick, onSuccessErrorEscKeydown } from './form.js';
 import { bodyTag } from './fullsize-photo.js';
 import  { debounce, shuffleArray } from './util.js';
 
@@ -10,11 +10,11 @@ const thumbnailContainer = document.querySelector('.pictures');
 const thumbnailListFragment = document.createDocumentFragment();
 const thumbnailTemplate = document.querySelector('#picture').content;
 const newTemplate = thumbnailTemplate.querySelector('.picture');
-const filterThumbnailsMenu = document.querySelector('.img-filters');
-const filterThumbnails = document.querySelector('.img-filters__form');
-const filterButtonDefault = filterThumbnails.querySelector('#filter-default');
-const filterRandomButton = filterThumbnails.querySelector('#filter-random');
-const filterButtonDiscussed = filterThumbnails.querySelector('#filter-discussed');
+const filterThumbnailsMenuContainer = document.querySelector('.img-filters');
+const filterThumbnailsMenu = document.querySelector('.img-filters__form');
+const filterButtonDefault = filterThumbnailsMenu.querySelector('#filter-default');
+const filterRandomButton = filterThumbnailsMenu.querySelector('#filter-random');
+const filterButtonDiscussed = filterThumbnailsMenu.querySelector('#filter-discussed');
 
 const createThumbnail = (data) => {
   const newThumbnail = newTemplate.cloneNode(true);
@@ -33,12 +33,12 @@ const createThumbnail = (data) => {
 };
 
 function onErrorLoad() {
-  closeUpload();
+  onCloseFormClick();
   const errorPopup = document.querySelector('#error').content.cloneNode(true);
   errorPopup.querySelector('.error__title').textContent = 'ошибка загрузки';
   errorPopup.querySelector('.error__button').textContent = 'закрыть';
   bodyTag.append(errorPopup);
-  document.addEventListener('click', closeSuccessOrErrorPopup);
+  document.addEventListener('click', onCloseSuccessErrorPopupClick);
   document.addEventListener('keydown', onSuccessErrorEscKeydown);
 }
 
@@ -55,38 +55,29 @@ const renderThumbnails = (photosData) => {
 };
 
 const showFilteredThumbnails = (data) => {
-  filterThumbnailsMenu.classList.remove('img-filters--inactive');
-  filterThumbnailsMenu.addEventListener('click', debounce((evt) => {
-    if (evt.target === filterButtonDefault && !evt.target.classList.contains('img-filters__button--active')) {
-      if (filterRandomButton.classList.contains('img-filters__button--active')) {
-        filterRandomButton.classList.remove('img-filters__button--active');
-      }
-      if (filterButtonDiscussed.classList.contains('img-filters__button--active')) {
-        filterButtonDiscussed.classList.remove('img-filters__button--active');
-      }
+  filterThumbnailsMenuContainer.classList.remove('img-filters--inactive');
+  filterThumbnailsMenuContainer.addEventListener('click', debounce((evt) => {
+    if (evt.target.classList.contains('img-filters__button--active')) {
+      return;
+    }
+    filterButtonDefault.classList.remove('img-filters__button--active');
+    filterRandomButton.classList.remove('img-filters__button--active');
+    filterButtonDiscussed.classList.remove('img-filters__button--active');
+    if (evt.target === filterButtonDefault) {
       filterButtonDefault.classList.add('img-filters__button--active');
+      clearThumbnailsContainer();
       renderThumbnails(data);
     }
-    if (evt.target === filterRandomButton && !evt.target.classList.contains('img-filters__button--active')) {
-      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
-        filterButtonDefault.classList.remove('img-filters__button--active');
-      }
-      if (filterButtonDiscussed.classList.contains('img-filters__button--active')) {
-        filterButtonDiscussed.classList.remove('img-filters__button--active');
-      }
+    if (evt.target === filterRandomButton) {
       filterRandomButton.classList.add('img-filters__button--active');
       const random = shuffleArray([...data]).slice(0, RANDOM_THUMBNAILS);
+      clearThumbnailsContainer();
       renderThumbnails(random);
     }
-    if (evt.target === filterButtonDiscussed && !evt.target.classList.contains('img-filters__button--active')) {
-      if (filterButtonDefault.classList.contains('img-filters__button--active')) {
-        filterButtonDefault.classList.remove('img-filters__button--active');
-      }
-      if (filterRandomButton.classList.contains('img-filters__button--active')) {
-        filterRandomButton.classList.remove('img-filters__button--active');
-      }
+    if (evt.target === filterButtonDiscussed) {
       filterButtonDiscussed.classList.add('img-filters__button--active');
       const discussedData = data.slice().sort((a, b) => b.comments.length - a.comments.length);
+      clearThumbnailsContainer();
       renderThumbnails(discussedData);
     }
   }, RERENDER_DELAY));

@@ -1,11 +1,12 @@
 import { isEscapeKey } from './util.js';
 
+const COMMENTS_SHOW_COUNT = 5;
 const commentTemplate = document.querySelector('#comment').content;
 const newTemplate = commentTemplate.querySelector('.social__comment');
 const containerComments = document.querySelector('.social__comments');
 const bigPicture = document.querySelector('.big-picture');
 const bigImage = bigPicture.querySelector('img');
-const closeButton = document.querySelector('#picture-cancel');
+const closeBigPicture = document.querySelector('.big-picture__cancel');
 const listComments = document.querySelector('.social__comment-count');
 const allCommentsCount = document.querySelector('.comments-count');
 const loadedComments = document.querySelector('.load__comments-count');
@@ -15,18 +16,18 @@ const bodyTag = document.querySelector('body');
 const onBigPhotoEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    closeBigPhoto();
+    onCloseBigPictureClick();
   }
 };
 
-function closeBigPhoto() {
+function onCloseBigPictureClick() {
   containerComments.innerHTML = '';
   bigPicture.classList.add('hidden');
   listComments.classList.add('hidden');
   commentsLoad.classList.add('hidden');
   bodyTag.classList.remove('modal-open');
   containerComments.innerHTML = '';
-  closeButton.removeEventListener('click', closeBigPhoto);
+  closeBigPicture.removeEventListener('click', onCloseBigPictureClick);
   document.removeEventListener('keydown', onBigPhotoEscKeydown);
 }
 
@@ -35,7 +36,7 @@ function openBigPhoto() {
   listComments.classList.remove('hidden');
   commentsLoad.classList.remove('hidden');
   bodyTag.classList.add('modal-open');
-  closeButton.addEventListener('click', closeBigPhoto);
+  closeBigPicture.addEventListener('click', onCloseBigPictureClick);
   document.addEventListener('keydown', onBigPhotoEscKeydown);
 }
 
@@ -66,13 +67,13 @@ const renderBigPhoto = (dataPhoto) => {
     });
     containerComments.append(fragment);
   };
-  const loadComments = () => {
-    const commentsRender = comments.slice(commentsRendered, commentsRendered + 5);
+  const onCommentsLoadClick = () => {
+    const commentsRender = comments.slice(commentsRendered, commentsRendered + COMMENTS_SHOW_COUNT);
     renderComments(commentsRender);
   };
-  loadComments();
-  commentsLoad.addEventListener('click', loadComments);
-  closeButton.addEventListener('click', () => commentsLoad.removeEventListener('click', loadComments));
+  onCommentsLoadClick();
+  commentsLoad.addEventListener('click', onCommentsLoadClick);
+  closeBigPicture.addEventListener('click', () => commentsLoad.removeEventListener('click', onCommentsLoadClick));
 };
 
 export { renderBigPhoto, openBigPhoto, bodyTag };
