@@ -1,7 +1,9 @@
 import { renderThumbnails, onErrorLoad, showFilteredThumbnails } from './create-thumbnails.js';
 
+const URL_GET_DATA = 'https://25.javascript.pages.academy/kekstagram/data';
+
 const getPhotosData = () => {
-  fetch('https://25.javascript.pages.academy/kekstagram/data')
+  fetch(URL_GET_DATA)
     .then((response) => {
       if (response.ok) {
         return response;
